@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <title>배송상태</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <!-- Add Google Maps -->
+    <script src="http://maps.googleapis.com/maps/api/js"></script>
+    <!-- css style -->
+    <style>
+    .navbar-brand {
+      background-color: #2B2B2B;
+      color: white !important;
+      font-size: 20px;
+      font-weight: bold;
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      letter-spacing: 1px;
+      z-index: -1;
+    }
+
+    .tooltip-inner {
+      background-color: #000000;
+      color: white;
+      width: 500px;
+    }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-header">
+        <span class="navbar-brand">배송상태</span>
+        <a href="#" data-toggle="tooltip" data-placement="bottom" title="앱을 이용하시면 실시간 배송위치 정보 확인이 가능합니다."
+          type="button" class="btn btn-primary navbar-btn pull-right"><span class="glyphicon glyphicon-download-alt"></span> 앱다운받기
+        </a>
+      </div>
+    </nav>
+    <div id="googleMap" style="height:590px; width:100%; margin-top: 50px;"></div>
+    <script>
+      function initialize() {
+        //var image = "markerStar.png"
+        var location = [["출발", 37.5765350, 126.9379690, 1], ["현재위치", 37.5665350, 126.9779690, 2], ["도착", 37.5565350, 127.0199690, 3]];
+        var mapProp = {
+            //center: new google.maps.LatLng(location[1][1], location[1][2]),
+            draggable: true,
+            panControl: true,
+            zoomControl: true,
+            mapTypeControl: false,
+            scaleControl: true,
+            streetViewControl: false,
+            overviewMapControl: true,
+            rotateControl: true,
+            mapTypeId:google.maps.MapTypeId.ROADMAP,
+            };
+        var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+        var bounds = new google.maps.LatLngBounds();
+        for (var i=0; i < 3; i++) {
+            bounds.extend(new google.maps.LatLng(location[i][1], location[i][2]));
+        }
+            map.fitBounds(bounds);
+        //var marker = new google.maps.Marker({position: myCenter, map: map, icon: image, animation: google.maps.Animation.BOUNCE});
+        for (var i = 0; i < location.length; i ++) {
+            var marker = new google.maps.Marker({
+                map: map,
+                position: new google.maps.LatLng(location[i][1], location[i][2]),
+                //icon: image,
+                animation: google.maps.Animation.DROP
+            });
+            var infowindow = new google.maps.InfoWindow({
+                content: location[i][0]
+            });
+                infowindow.open(map,marker);
+        }
+      }
+      google.maps.event.addDomListener(window, 'load', initialize);
+      $(document).ready(function(){
+      $('[data-toggle="tooltip"]').tooltip('show');
+      });
+    </script>
+  </body>
+</html>
